@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'comprobo-warmup-project'
+package_name = 'comprobo_warmup_project'
 
 setup(
     name=package_name,
