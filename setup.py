@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'teleop = comprobo_warmup_project.teleop:main',
-            'drive_square = comprobo_warmup_project.drive_square:main'
+            'drive_square = comprobo_warmup_project.drive_square:main',
+            'wall_follow = comprobo_warmup_project.wall_follower:main'
         ],
     },
 )
