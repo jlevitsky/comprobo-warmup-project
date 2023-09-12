@@ -22,7 +22,8 @@ setup(
         'console_scripts': [
             'teleop = comprobo_warmup_project.teleop:main',
             'drive_square = comprobo_warmup_project.drive_square:main',
-            'wall_follow = comprobo_warmup_project.wall_follower:main'
+            'wall_follower = comprobo_warmup_project.wall_follower:main',
+            'person_follower = comprobo_warmup_project.person_follower:main',
         ],
     },
 )
