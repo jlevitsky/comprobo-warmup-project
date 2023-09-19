@@ -4,11 +4,11 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
 
-TURN_TIME = .3
-DRIVE_TIME = .75
+TURN_TIME = .25
+DRIVE_TIME = .5
 
 DRIVE_SPEED = 0.75
-TURN_SPEED = 0.75
+TURN_SPEED = 1.0
 
 
 class Dance(Node):
@@ -23,35 +23,39 @@ class Dance(Node):
         current_time, _ = self.get_clock().now().seconds_nanoseconds()
         if self.state_start_time == -1:
             drive_msg = Twist()
-            drive_msg.linear.x = DRIVE_SPEED
+            drive_msg.angular.z = TURN_SPEED
             self.publisher.publish(drive_msg)
             self.state_start_time = current_time
         
-        if self.state % 2 == 0:
-            if current_time - self.state_start_time > DRIVE_TIME:
+        if self.state % 8 < 3:
+            if current_time - self.state_start_time > TURN_TIME:
                 self.state += 1
-                turn_msg = Twist()
-                turn_msg.angular.z = TURN_SPEED
-                self.publisher.publish(turn_msg)
-                turn_msg.angular.z = -TURN_SPEED
-                self.publisher.publish(turn_msg)
-                turn_msg.angular.z = TURN_SPEED
-                self.publisher.publish(turn_msg)
-                turn_msg.angular.z = -TURN_SPEED
-                self.publisher.publish(turn_msg)
+                drive_msg = Twist()
+                drive_msg.angular.z = TURN_SPEED * (-1 if self.state % 2 == 1 else 1)
+                self.publisher.publish(drive_msg)
                 self.state_start_time = current_time
-
-        else:
+        elif self.state % 8 == 3:
             if current_time - self.state_start_time > TURN_TIME:
                 self.state += 1
                 drive_msg = Twist()
                 drive_msg.linear.x = DRIVE_SPEED
                 self.publisher.publish(drive_msg)
-                drive_msg.linear.x = -DRIVE_SPEED
-                self.publisher.publish(drive_msg)
-                drive_msg.linear.x = -DRIVE_SPEED
+                self.state_start_time = current_time
+        elif self.state % 8 < 7:
+            if current_time - self.state_start_time > DRIVE_TIME:
+                self.state += 1
+                drive_msg = Twist()
+                drive_msg.linear.x = DRIVE_SPEED * (-1 if self.state % 2 == 1 else 1)
                 self.publisher.publish(drive_msg)
                 self.state_start_time = current_time
+        else:
+            if current_time - self.state_start_time > DRIVE_TIME:
+                self.state += 1
+                drive_msg = Twist()
+                drive_msg.linear.x = TURN_SPEED
+                self.publisher.publish(drive_msg)
+                self.state_start_time = current_time
+                self.state = 0
 
 
 def main():
